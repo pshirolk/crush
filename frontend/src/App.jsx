@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import TransactionScreen from './components/TransactionScreen'
 import './App.css'
 
 function App() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [currentScreen, setCurrentScreen] = useState('home')
-  
+
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentTime(new Date())
@@ -64,21 +65,21 @@ function App() {
               </div>
             </div>
           </>
+
+        ) : currentScreen === 'transaction' ? (
+          <TransactionScreen onBack={() => setCurrentScreen('home')} />
         ) : (
           <div className="placeholder-screen">
             <button
               className="back-button"
               onClick={() => setCurrentScreen('home')}
             >
-              ← Back to Home
+              ← Home
             </button>
             <h1>
-              {currentScreen === 'transaction'
-                ? 'New Transaction'
-                : currentScreen.charAt(0).toUpperCase() +
-                  currentScreen.slice(1)}
+              {currentScreen.charAt(0).toUpperCase() +
+                currentScreen.slice(1)}
             </h1>
-            <p>blank</p>
           </div>
         )}
       </main>
