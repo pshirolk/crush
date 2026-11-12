@@ -1,7 +1,10 @@
+
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--color-background);
+  color: var(--color-text);
 }
 
 .header {
@@ -9,7 +12,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 28px 48px;
-  border-bottom: 1px solid #e8e5e0;
+  border-bottom: 1px solid var(--color-accent);
 }
 
 .logo {
@@ -17,17 +20,18 @@
   font-weight: 800;
   letter-spacing: -2px;
   cursor: pointer;
+  color: var(--color-text);
 }
 
 .logo span {
-  color: #e35c7a;
+  color: var(--color-accent);
 }
 
 .header-label {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #999;
+  color: var(--color-accent);
 }
 
 .main {
@@ -43,7 +47,7 @@
 }
 
 .welcome p {
-  color: #888;
+  color: var(--color-accent);
   font-size: 15px;
 }
 
@@ -60,7 +64,7 @@
 }
 
 .action-button {
-  border: 1px solid #e5e2dd;
+  border: 1px solid var(--color-accent);
   border-radius: 16px;
   transition: transform 0.2s, background 0.2s;
 }
@@ -75,8 +79,8 @@
   gap: 20px;
   width: 100%;
   padding: 36px;
-  background: #e35c7a;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-background);
   border: none;
   font-size: 25px;
   font-weight: 700;
@@ -84,7 +88,7 @@
 }
 
 .primary:hover {
-  background: #d94b6b;
+  background: var(--color-text);
 }
 
 .action-icon {
@@ -99,7 +103,8 @@
 }
 
 .secondary {
-  background: white;
+  background: var(--color-background);
+  color: var(--color-text);
   padding: 32px;
   text-align: left;
   font-size: 19px;
@@ -107,7 +112,8 @@
 }
 
 .secondary:hover {
-  background: #fff0f3;
+  background: var(--color-accent);
+  color: var(--color-background);
 }
 
 .footer {
@@ -115,13 +121,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 48px;
-  border-top: 1px solid #e8e5e0;
-  color: #999;
+  border-top: 1px solid var(--color-accent);
+  color: var(--color-accent);
   font-size: 13px;
 }
 
 .clock {
-  color: #252525;
+  color: var(--color-text);
   font-size: 16px;
   font-weight: 600;
 }
@@ -130,7 +136,7 @@
   background: transparent;
   border: none;
   padding: 0;
-  color: #e35c7a;
+  color: var(--color-accent);
   font-weight: 600;
 }
 

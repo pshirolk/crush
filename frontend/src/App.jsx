@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import TransactionScreen from './components/TransactionScreen'
+import Screensaver from './components/Screensaver'
 import './App.css'
 
 function App() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [currentScreen, setCurrentScreen] = useState('home')
+  const [isInactive, setIsInactive] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -14,9 +16,48 @@ function App() {
     return () => clearInterval(interval)
   }, [])
 
+
+  useEffect(() => {
+    let inactivityTimer
+
+    const resetTimer = () => {
+      setIsInactive(false)
+
+      clearTimeout(inactivityTimer)
+
+      inactivityTimer = setTimeout(() => {
+        setIsInactive(true)
+      }, 30000)
+    }
+
+    const events = [
+      'mousemove',
+      'mousedown',
+      'keydown',
+      'touchstart',
+      'pointerdown',
+    ]
+
+    events.forEach((event) => {
+      window.addEventListener(event, resetTimer)
+    })
+
+    resetTimer()
+
+    return () => {
+      clearTimeout(inactivityTimer)
+
+      events.forEach((event) => {
+        window.removeEventListener(event, resetTimer)
+      })
+    }
+  }, [])
+
+
   const time = currentTime.toLocaleTimeString([], {
     hour: 'numeric',
     minute: '2-digit',
+    second: '2-digit'
   })
 
   const date = currentTime.toLocaleDateString([], {
@@ -85,9 +126,10 @@ function App() {
       </main>
 
       <footer className="footer">
-        <span>crush POS</span>
+        <span>crush coffee 2026</span>
         <span className="clock">{time}</span>
       </footer>
+      {isInactive && <Screensaver />}
     </div>
   )
 }

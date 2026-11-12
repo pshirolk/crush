@@ -1,8 +1,14 @@
 
 :root {
   font-family: Inter, system-ui, Arial, sans-serif;
-  color: #252525;
-  background: #faf9f6;
+
+  --color-background: #f4f0e7;
+  --color-text: #000000;
+  --color-accent: #231f1e;
+
+  color: var(--color-text);
+  background: var(--color-background);
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
