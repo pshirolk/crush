@@ -84,27 +84,22 @@ function App() {
               <p>What would you like to do?</p>
             </div>
 
-            <div className="home-actions">
-              <button
-                className="action-button primary"
-                onClick={() => setCurrentScreen('transaction')}
-              >
-                <span className="action-icon">＋</span>
-                <span>New Transaction</span>
-              </button>
 
-              <div className="secondary-actions">
-                {['Transactions', 'Menu', 'Reports', 'Settings'].map((item) => (
-                  <button
-                    key={item}
-                    className="action-button secondary"
-                    onClick={() => setCurrentScreen(item.toLowerCase())}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
+            <div className="home-actions">
+              {['New Order', 'Transactions', 'Inventory', 'Tips', 'Reports', 'Employees'].map((item) => (
+                <button
+                  key={item}
+                  className={`action-button ${item === 'New Order' ? 'primary' : 'secondary'}`}
+                  onClick={() =>
+                    setCurrentScreen(item === 'New Order' ? 'transaction' : item.toLowerCase())
+                  }
+                >
+                  {item === 'New Order' && <span className="action-icon">＋</span>}
+                  <span>{item}</span>
+                </button>
+              ))}
             </div>
+
           </>
 
         ) : currentScreen === 'transaction' ? (
