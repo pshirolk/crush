@@ -11,27 +11,74 @@ function App() {
   const [isInactive, setIsInactive] = useState(false)
 
 
-  // Load saved inventory when the app starts
-  const [inventory, setInventory] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem('crush-inventory')) || {}
-    } catch {
-      return {}
+  const [inventory, setInventory] = useState({})
+  const [inventoryLoading, setInventoryLoading] = useState(true)
+  const [inventoryError, setInventoryError] = useState('')
+
+  useEffect(() => {
+    let cancelled = false
+
+    const loadInventory = async () => {
+      try {
+        const response = await fetch(
+          'http://localhost:5001/api/inventory'
+        )
+
+        if (!response.ok) {
+          throw new Error('Failed to load inventory')
+        }
+
+        const data = await response.json()
+
+        if (!cancelled) {
+          setInventory(data)
+          setInventoryError('')
+        }
+      } catch (error) {
+        console.error(error)
+
+        if (!cancelled) {
+          setInventoryError('Unable to load inventory')
+        }
+      } finally {
+        if (!cancelled) {
+          setInventoryLoading(false)
+        }
+      }
     }
-  })
 
-  // Save inventory whenever its status changes
-  useEffect(() => {
-    localStorage.setItem('crush-inventory', JSON.stringify(inventory))
-  }, [inventory])
+    loadInventory()
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTime(new Date())
-    }, 1000)
-
-    return () => clearInterval(interval)
+    return () => {
+      cancelled = true
+    }
   }, [])
+
+  const updateInventoryStatus = async (key, status) => {
+    const response = await fetch(
+      `http://localhost:5001/api/inventory/${encodeURIComponent(key)}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status }),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to update inventory')
+    }
+
+    const updated = await response.json()
+
+    setInventory((current) => ({
+      ...current,
+      [updated.item_key]: updated.status,
+    }))
+  }
+
+
 
 
   useEffect(() => {
@@ -119,16 +166,23 @@ function App() {
 
           </>
 
+          // Prevent ordering before inventory has loaded
         ) : currentScreen === 'transaction' ? (
-          <TransactionScreen
-            onBack={() => setCurrentScreen('home')}
-            inventory={inventory}
-          />
+          inventoryLoading ? (
+            <p>Loading inventory...</p>
+          ) : inventoryError ? (
+            <p>{inventoryError}</p>
+          ) : (
+            <TransactionScreen
+              onBack={() => setCurrentScreen('home')}
+              inventory={inventory}
+            />
+          )
         ) : currentScreen === 'inventory' ? (
           <InventoryScreen
             products={products}
             inventory={inventory}
-            setInventory={setInventory}
+            updateInventoryStatus={updateInventoryStatus}
             onBack={() => setCurrentScreen('home')}
           />
         ) : (

@@ -511,7 +511,9 @@ function TransactionScreen({ onBack, inventory }) {
                                         {group.options.map((option) => {
                                             const status =
                                                 group.id === 'ice'
-                                                    ? iceStatus
+                                                    ? option.id === 'no-ice'
+                                                        ? 'available'
+                                                        : iceStatus
                                                     : inventory[modifierStockKey(option.id)] || 'available'
 
                                             const iceUnavailable =
