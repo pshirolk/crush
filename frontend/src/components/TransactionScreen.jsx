@@ -1,31 +1,12 @@
 
 import { useState } from 'react'
 import './TransactionScreen.css'
+import { categories } from '../data/products'
+import {
+    productStockKey,
+    modifierStockKey,
+} from '../data/inventoryKeys'
 
-const categories = {
-    'Coffee & Tea': [
-        { id: 1, name: 'Espresso', price: 3.00, modifierType: 'espresso' },
-        { id: 2, name: 'Americano', price: 3.50, modifierType: 'americano' },
-        { id: 3, name: 'Latte', price: 4.75, modifierType: 'milkCoffee' },
-        { id: 4, name: 'Cappuccino', price: 4.50, modifierType: 'milkCoffee' },
-        { id: 5, name: 'Chai Latte', price: 4.75, modifierType: 'chai' },
-        { id: 6, name: 'Matcha Latte', price: 5.25, modifierType: 'matcha' },
-    ],
-    'Baked Goods': [
-        { id: 7, name: 'Croissant', price: 3.75 },
-        { id: 8, name: 'Blueberry Muffin', price: 3.50 },
-        { id: 9, name: 'Chocolate Chip Cookie', price: 2.75 },
-    ],
-    'Bottled Beverages & Chips': [
-        { id: 10, name: 'Bottled Water', price: 2.00 },
-        { id: 11, name: 'Sparkling Water', price: 2.75 },
-        { id: 12, name: 'Potato Chips', price: 2.50 },
-    ],
-    'Merch': [
-        { id: 13, name: 'Crush Tote Bag', price: 18.00 },
-        { id: 14, name: 'Crush Mug', price: 15.00 },
-    ],
-}
 
 const cupSizes = [
     { id: 'small', name: '8 oz', price: 0 },
@@ -180,18 +161,27 @@ const modifierConfig = {
 
 const formatPrice = (price) => `$${price.toFixed(2)}`
 
-function TransactionScreen({ onBack }) {
+function TransactionScreen({ onBack, inventory }) {
     const [selectedCategory, setSelectedCategory] = useState('Coffee & Tea')
     const [selectedProduct, setSelectedProduct] = useState(null)
     const [selectedAddOns, setSelectedAddOns] = useState([])
     const [selectedSubstitutions, setSelectedSubstitutions] = useState({})
     const [cart, setCart] = useState([])
 
+    const iceStatus = inventory[modifierStockKey('ice')] || 'available'
+    const iceSoldOut = iceStatus === 'soldout'
+
+    const getModifierStatus = (id) => inventory?.[modifierStockKey(id)] || 'available'
+    const getProductStatus = (id) => inventory?.[productStockKey(id)] || 'available'
+    const isAvailable = (option) => getModifierStatus(option.id) !== 'soldout'
+
     const config = selectedProduct
         ? modifierConfig[selectedProduct.modifierType]
         : null
 
     const selectProduct = (product) => {
+        if (getProductStatus(product.id) === 'soldout') return
+
         setSelectedProduct(product)
         setSelectedAddOns([])
 
@@ -201,9 +191,15 @@ function TransactionScreen({ onBack }) {
 
         productConfig?.substitutions.forEach((group) => {
             if (group.id !== 'ice') {
-                defaults[group.id] = group.options[0]
+                const firstAvailable = group.options.find(isAvailable)
+                if (firstAvailable) defaults[group.id] = firstAvailable
             }
         })
+
+        if (defaults.style?.id === 'iced') {
+            const firstIce = iceOptions.find(isAvailable)
+            if (firstIce) defaults.ice = firstIce
+        }
         setSelectedSubstitutions(defaults)
 
         if (!productConfig) {
@@ -212,6 +208,7 @@ function TransactionScreen({ onBack }) {
     }
 
     const updateAddOnQuantity = (option, change) => {
+        if (change > 0 && !isAvailable(option)) return
         setSelectedAddOns((current) => {
             const existing = current.find(
                 (item) => item.id === option.id
@@ -244,7 +241,15 @@ function TransactionScreen({ onBack }) {
 
 
 
+
     const selectSubstitution = (groupId, option) => {
+        if (
+            groupId === 'ice' &&
+            iceSoldOut
+        ) {
+            return
+        }
+
         setSelectedSubstitutions((current) => {
             const updated = {
                 ...current,
@@ -253,7 +258,11 @@ function TransactionScreen({ onBack }) {
 
             if (groupId === 'style') {
                 if (option.id === 'iced') {
-                    updated.ice = iceOptions[0]
+                    if (!iceSoldOut) {
+                        updated.ice = iceOptions[0]
+                    } else {
+                        delete updated.ice
+                    }
                 } else {
                     delete updated.ice
                 }
@@ -262,6 +271,7 @@ function TransactionScreen({ onBack }) {
             return updated
         })
     }
+
 
 
     const calculatePrice = (product, addOns, substitutions) => {
@@ -278,7 +288,26 @@ function TransactionScreen({ onBack }) {
         return product.price + addOnTotal + substitutionTotal
     }
 
+    const canAddToCart = (product, addOns, substitutions) => {
+        if (getProductStatus(product.id) === 'soldout') return false
+        if (addOns.some((option) => !isAvailable(option))) return false
+
+        const productConfig = modifierConfig[product.modifierType]
+        if (!productConfig) return true
+
+        for (const group of productConfig.substitutions) {
+            if (group.id === 'ice' && substitutions.style?.id !== 'iced') continue
+            const chosen = substitutions[group.id]
+            if (!chosen || !group.options.some((option) => option.id === chosen.id) || !isAvailable(chosen)) {
+                return false
+            }
+        }
+        return true
+    }
+
     const addToCart = (product, addOns, substitutions) => {
+        if (!canAddToCart(product, addOns, substitutions)) return
+
         const unitPrice = calculatePrice(product, addOns, substitutions)
 
         const modifierKey = JSON.stringify({
@@ -326,7 +355,7 @@ function TransactionScreen({ onBack }) {
         setCart((current) =>
             current
                 .map((item) =>
-                    item.modifierKey === modifierKey
+                    item.modifierKey === modifierKey && (change < 0 || canAddToCart(item, item.addOns, item.substitutions))
                         ? { ...item, quantity: item.quantity + change }
                         : item
                 )
@@ -338,6 +367,10 @@ function TransactionScreen({ onBack }) {
         (total, item) => total + item.unitPrice * item.quantity,
         0
     )
+
+    const canAddSelected = selectedProduct
+        ? canAddToCart(selectedProduct, selectedAddOns, selectedSubstitutions)
+        : false
 
     const selectedPrice = selectedProduct
         ? calculatePrice(
@@ -394,22 +427,30 @@ function TransactionScreen({ onBack }) {
 
 
                                     {config.addOns.map((option) => {
+
+                                        const status =
+                                            getModifierStatus(option.id)
+
+                                        const soldOut = status === 'soldout'
+
                                         const quantity =
                                             selectedAddOns.find((item) => item.id === option.id)
                                                 ?.quantity || 0
 
                                         const allowsMultiple =
                                             option.id === 'extra-shot' ||
-                                            ['vanilla', 'caramel', 'hazelnut'].includes(option.id)
+                                            syrupOptions.some((syrup) => syrup.id === option.id)
 
                                         return (
-                                            <div className="modifier-option" key={option.id}>
+                                            <div className={`modifier-option inventory-${status}`} key={option.id}>
                                                 <span>{option.name}</span>
 
                                                 <span>
                                                     {option.price > 0
                                                         ? `+${formatPrice(option.price)} each`
                                                         : 'Free'}
+                                                    {status === 'low' && ' · Running Low'}
+                                                    {soldOut && ' · Sold Out'}
                                                 </span>
 
                                                 {allowsMultiple ? (
@@ -426,6 +467,7 @@ function TransactionScreen({ onBack }) {
 
                                                         <button
                                                             onClick={() => updateAddOnQuantity(option, 1)}
+                                                            disabled={soldOut}
                                                             aria-label={`Add one ${option.name}`}
                                                         >
                                                             +
@@ -435,6 +477,7 @@ function TransactionScreen({ onBack }) {
                                                     <input
                                                         type="checkbox"
                                                         checked={quantity > 0}
+                                                        disabled={soldOut && quantity === 0}
                                                         onChange={(event) =>
                                                             updateAddOnQuantity(
                                                                 option,
@@ -453,7 +496,10 @@ function TransactionScreen({ onBack }) {
                             {config.substitutions
                                 .filter((group) => {
                                     if (group.id === 'ice') {
-                                        return selectedSubstitutions.style?.id === 'iced'
+                                        return (
+                                            selectedSubstitutions.style?.id === 'iced' &&
+                                            !iceSoldOut
+                                        )
                                     }
 
                                     return true
@@ -462,31 +508,59 @@ function TransactionScreen({ onBack }) {
                                     <div className="modifier-section" key={group.id}>
                                         <h3>{group.name}</h3>
 
-                                        {group.options.map((option) => (
-                                            <label className="modifier-option" key={option.id}>
-                                                <input
-                                                    type="radio"
-                                                    name={group.id}
-                                                    checked={
-                                                        selectedSubstitutions[group.id]?.id === option.id
-                                                    }
-                                                    onChange={() =>
-                                                        selectSubstitution(group.id, option)
-                                                    }
-                                                />
-                                                <span>{option.name}</span>
-                                                <span>
-                                                    {option.price > 0
-                                                        ? `+${formatPrice(option.price)}`
-                                                        : 'Included'}
-                                                </span>
-                                            </label>
-                                        ))}
+                                        {group.options.map((option) => {
+                                            const status =
+                                                group.id === 'ice'
+                                                    ? iceStatus
+                                                    : inventory[modifierStockKey(option.id)] || 'available'
+
+                                            const iceUnavailable =
+                                                group.id === 'style' &&
+                                                option.id === 'iced' &&
+                                                iceSoldOut
+
+                                            const soldOut = status === 'soldout' || iceUnavailable
+
+                                            return (
+
+                                                <label
+                                                    className={`modifier-option inventory-${soldOut ? 'soldout' : status
+                                                        }`}
+                                                    key={option.id}
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        name={group.id}
+                                                        disabled={soldOut}
+                                                        checked={
+                                                            selectedSubstitutions[group.id]?.id === option.id
+                                                        }
+                                                        onChange={() =>
+                                                            selectSubstitution(group.id, option)
+                                                        }
+                                                    />
+
+                                                    <span>{option.name}</span>
+
+                                                    <span>
+                                                        {soldOut
+                                                            ? 'Sold Out'
+                                                            : status === 'low'
+                                                                ? 'Running Low'
+                                                                : option.price > 0
+                                                                    ? `+${formatPrice(option.price)}`
+                                                                    : 'Included'}
+                                                    </span>
+                                                </label>
+
+                                            )
+                                        })}
                                     </div>
                                 ))}
 
                             <button
                                 className="add-to-order"
+                                disabled={!canAddSelected}
                                 onClick={() =>
                                     addToCart(
                                         selectedProduct,
@@ -503,16 +577,30 @@ function TransactionScreen({ onBack }) {
                             <h2>{selectedCategory}</h2>
 
                             <div className="product-grid">
-                                {categories[selectedCategory].map((product) => (
-                                    <button
-                                        key={product.id}
-                                        className="product-button"
-                                        onClick={() => selectProduct(product)}
-                                    >
-                                        <span>{product.name}</span>
-                                        <strong>{formatPrice(product.price)}</strong>
-                                    </button>
-                                ))}
+                                {categories[selectedCategory].map((product) => {
+                                    const status = getProductStatus(product.id)
+
+                                    return (
+                                        <button
+                                            key={product.id}
+                                            className={`product-button inventory-${status}`}
+                                            disabled={status === 'soldout'}
+                                            onClick={() => selectProduct(product)}
+                                        >
+                                            <span>{product.name}</span>
+                                            <strong>{formatPrice(product.price)}</strong>
+
+                                            {status === 'low' && (
+                                                <small className="stock-label">Running Low</small>
+                                            )}
+
+                                            {status === 'soldout' && (
+                                                <small className="stock-label">Sold Out</small>
+                                            )}
+                                        </button>
+                                    )
+                                })}
+
                             </div>
                         </>
                     )}

@@ -1,12 +1,29 @@
 import { useEffect, useState } from 'react'
 import TransactionScreen from './components/TransactionScreen'
 import Screensaver from './components/Screensaver'
+import InventoryScreen from './components/InventoryScreen'
+import { products } from './data/products'
 import './App.css'
 
 function App() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [currentScreen, setCurrentScreen] = useState('home')
   const [isInactive, setIsInactive] = useState(false)
+
+
+  // Load saved inventory when the app starts
+  const [inventory, setInventory] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('crush-inventory')) || {}
+    } catch {
+      return {}
+    }
+  })
+
+  // Save inventory whenever its status changes
+  useEffect(() => {
+    localStorage.setItem('crush-inventory', JSON.stringify(inventory))
+  }, [inventory])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -103,7 +120,17 @@ function App() {
           </>
 
         ) : currentScreen === 'transaction' ? (
-          <TransactionScreen onBack={() => setCurrentScreen('home')} />
+          <TransactionScreen
+            onBack={() => setCurrentScreen('home')}
+            inventory={inventory}
+          />
+        ) : currentScreen === 'inventory' ? (
+          <InventoryScreen
+            products={products}
+            inventory={inventory}
+            setInventory={setInventory}
+            onBack={() => setCurrentScreen('home')}
+          />
         ) : (
           <div className="placeholder-screen">
             <button

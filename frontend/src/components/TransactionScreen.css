@@ -301,3 +301,77 @@
   text-align: center;
   font-weight: 600;
 }
+
+.product-button.inventory-low {
+  background: #f0dfbc;
+  border-color: #a36b24;
+  color: #231f1e;
+}
+
+.product-button.inventory-soldout {
+  background: #dedbd5;
+  border-color: #b8b3ac;
+  color: #88837c;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.product-button.inventory-soldout > span:first-child {
+  text-decoration: line-through;
+}
+
+.stock-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+
+.modifier-option.inventory-low {
+  background: #f0dfbc;
+  border-radius: 8px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.modifier-option.inventory-soldout {
+  background: #dedbd5;
+  color: #88837c;
+  border-radius: 8px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.modifier-option.inventory-soldout > span:first-of-type {
+  text-decoration: line-through;
+}
+
+.modifier-option.inventory-soldout input {
+  cursor: not-allowed;
+}
+
+
+.modifier-option.inventory-soldout {
+  background: #dedbd5;
+  color: #88837c;
+  border-radius: 8px;
+  padding: 12px;
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+.modifier-option.inventory-soldout > span:first-of-type {
+  text-decoration: line-through;
+}
+
+.modifier-option.inventory-soldout input {
+  cursor: not-allowed;
+}
+
+.modifier-option.inventory-low {
+  background: #f0dfbc;
+  border-radius: 8px;
+  padding: 12px;
+}
+
