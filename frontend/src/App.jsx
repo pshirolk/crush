@@ -9,12 +9,22 @@ function App() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [currentScreen, setCurrentScreen] = useState('home')
   const [isInactive, setIsInactive] = useState(false)
-
-
   const [inventory, setInventory] = useState({})
   const [inventoryLoading, setInventoryLoading] = useState(true)
   const [inventoryError, setInventoryError] = useState('')
 
+  useEffect(() => {
+    const updateClock = () => {
+      setCurrentTime(new Date())
+    }
+  
+    updateClock()
+  
+    const clockInterval = setInterval(updateClock, 1000)
+  
+    return () => clearInterval(clockInterval)
+  }, [])
+  
   useEffect(() => {
     let cancelled = false
 
@@ -139,7 +149,7 @@ function App() {
         <div className="header-label">POINT OF SALE</div>
       </header>
 
-      <main className="main">
+      <main className={`main ${currentScreen === 'home' ? 'home-main' : ''}`}>
         {currentScreen === 'home' ? (
           <>
             <div className="welcome">
