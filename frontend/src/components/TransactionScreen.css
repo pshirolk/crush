@@ -375,3 +375,220 @@
   padding: 12px;
 }
 
+.checkout-panel {
+  width: min(100%, 680px);
+  margin: 24px auto;
+  padding: 24px;
+  background: var(--color-background, #f4f0e7);
+  color: var(--color-text, #000);
+  border: 1px solid #d8d0c5;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.checkout-field { display: flex; flex-direction: column; gap: 8px; font-weight: 600; }
+.checkout-field input, .checkout-field textarea {
+  font: inherit;
+  padding: 12px;
+  border: 1px solid #aaa49c;
+  border-radius: 8px;
+  background: #fff;
+  color: #231f1e;
+}
+.checkout-items { display: flex; flex-direction: column; gap: 14px; }
+.checkout-item { padding-bottom: 12px; border-bottom: 1px solid #d8d0c5; }
+.checkout-actions { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.payment-method-options { display: flex; gap: 16px; flex-wrap: wrap; }
+.payment-method-option { display: flex; align-items: center; gap: 10px; padding: 14px 20px; border: 1px solid #aaa49c; border-radius: 8px; cursor: pointer; }
+.checkout-hint { color: #645e58; font-size: 0.9rem; }
+
+
+/* Checkout screens */
+
+.checkout-container {
+  width: min(100%, 650px);
+  margin: 30px auto;
+  padding: 30px;
+  background: #f4f0e7;
+  color: #231f1e;
+  border: 1px solid #d8d1c5;
+  border-radius: 14px;
+}
+
+.checkout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.checkout-field label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.checkout-field input,
+.checkout-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  border: 1px solid #c8c0b5;
+  border-radius: 8px;
+  background: #fffdf8;
+  color: #231f1e;
+  font: inherit;
+}
+
+.checkout-field textarea {
+  resize: vertical;
+}
+
+.checkout-field input:focus,
+.checkout-field textarea:focus {
+  outline: 2px solid #231f1e;
+  outline-offset: 2px;
+}
+
+.checkout-summary {
+  margin-bottom: 25px;
+}
+
+.checkout-summary h2 {
+  margin-bottom: 20px;
+}
+
+.checkout-item {
+  padding: 15px 0;
+  border-bottom: 1px solid #d8d1c5;
+}
+
+.checkout-item-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.checkout-item .cart-modifiers {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: #71695f;
+}
+
+.checkout-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #d8d1c5;
+  font-size: 18px;
+}
+
+.checkout-note-preview {
+  margin-top: 20px;
+}
+
+.checkout-note-preview p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.checkout-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.checkout-actions button {
+  width: 100%;
+  min-height: 48px;
+  cursor: pointer;
+}
+
+.payment-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.payment-option {
+  padding: 25px 15px;
+  border: 2px solid #c8c0b5;
+  border-radius: 10px;
+  background: #fffdf8;
+  color: #231f1e;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.payment-option:hover {
+  border-color: #231f1e;
+}
+
+.payment-option.selected {
+  background: #231f1e;
+  color: #f4f0e7;
+  border-color: #231f1e;
+}
+
+.payment-message {
+  margin-top: 18px;
+  color: #71695f;
+  font-size: 14px;
+}
+
+@media (max-width: 700px) {
+  .checkout-container {
+    margin: 15px auto;
+    padding: 18px;
+  }
+
+  .payment-options {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.order-summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.order-summary-header h2 {
+  margin: 0;
+}
+
+.clear-order-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #231f1e;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.clear-order-icon:hover:not(:disabled) {
+  background: #e5ded3;
+}
+
+.clear-order-icon:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}

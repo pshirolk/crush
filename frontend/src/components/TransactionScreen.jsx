@@ -167,6 +167,10 @@ function TransactionScreen({ onBack, inventory }) {
     const [selectedAddOns, setSelectedAddOns] = useState([])
     const [selectedSubstitutions, setSelectedSubstitutions] = useState({})
     const [cart, setCart] = useState([])
+    const [checkoutStep, setCheckoutStep] = useState('cart')
+    const [customerName, setCustomerName] = useState('')
+    const [orderNote, setOrderNote] = useState('')
+    const [paymentMethod, setPaymentMethod] = useState('')
 
     const iceStatus = inventory[modifierStockKey('ice')] || 'available'
     const iceSoldOut = iceStatus === 'soldout'
@@ -368,6 +372,28 @@ function TransactionScreen({ onBack, inventory }) {
         0
     )
 
+    const clearOrder = () => {
+        setCart([])
+        setSelectedProduct(null)
+        setSelectedAddOns([])
+        setSelectedSubstitutions({})
+        setCustomerName('')
+        setOrderNote('')
+        setPaymentMethod('')
+        setCheckoutStep('cart')
+    }
+
+    const submitOrder = () => {
+        if (cart.length === 0) return
+
+        setSelectedProduct(null)
+        setCheckoutStep('details')
+    }
+
+    const continueToPayment = () => {
+        setCheckoutStep('payment')
+    }
+
     const canAddSelected = selectedProduct
         ? canAddToCart(selectedProduct, selectedAddOns, selectedSubstitutions)
         : false
@@ -379,6 +405,205 @@ function TransactionScreen({ onBack, inventory }) {
             selectedSubstitutions
         )
         : 0
+
+
+    if (checkoutStep === 'details') {
+        return (
+            <div className="transaction-screen">
+                <div className="transaction-heading">
+                    <button
+                        className="back-button"
+                        onClick={() => setCheckoutStep('cart')}
+                    >
+                        ← Back to Order
+                    </button>
+
+                    <h1>Order Details</h1>
+                </div>
+
+                <div className="checkout-container">
+                    <div className="checkout-field">
+                        <label htmlFor="customer-name">
+                            Customer Name
+                        </label>
+
+                        <input
+                            id="customer-name"
+                            type="text"
+                            placeholder="Enter customer name"
+                            value={customerName}
+                            onChange={(event) =>
+                                setCustomerName(event.target.value)
+                            }
+                        />
+                    </div>
+
+                    <div className="checkout-summary">
+                        <h2>Order Summary</h2>
+
+                        {cart.map((item) => (
+                            <div
+                                className="checkout-item"
+                                key={item.modifierKey}
+                            >
+                                <div className="checkout-item-heading">
+                                    <strong>
+                                        {item.quantity} × {item.name}
+                                    </strong>
+
+                                    <strong>
+                                        {formatPrice(
+                                            item.unitPrice * item.quantity
+                                        )}
+                                    </strong>
+                                </div>
+
+                                <div className="cart-modifiers">
+                                    {item.addOns.map((option) => (
+                                        <span key={option.id}>
+                                            {option.quantity} × {option.name}
+                                        </span>
+                                    ))}
+
+                                    {Object.entries(item.substitutions)
+                                        .filter(
+                                            ([groupId, option]) =>
+                                                !(
+                                                    groupId === 'style' &&
+                                                    option.id === 'iced'
+                                                )
+                                        )
+                                        .map(([groupId, option]) => (
+                                            <span key={groupId}>
+                                                {option.name}
+                                            </span>
+                                        ))}
+                                </div>
+                            </div>
+                        ))}
+
+                        <div className="checkout-total">
+                            <span>Subtotal</span>
+                            <strong>{formatPrice(subtotal)}</strong>
+                        </div>
+                    </div>
+
+                    <div className="checkout-field">
+                        <label htmlFor="order-note">
+                            Note (Optional)
+                        </label>
+
+                        <textarea
+                            id="order-note"
+                            placeholder="Add special instructions..."
+                            value={orderNote}
+                            onChange={(event) =>
+                                setOrderNote(event.target.value)
+                            }
+                            rows={4}
+                        />
+                    </div>
+
+                    <div className="checkout-actions">
+                        <button
+                            className="add-to-order"
+                            onClick={continueToPayment}
+                        >
+                            Continue to Payment
+                        </button>
+
+                        <button
+                            className="clear-order"
+                            onClick={clearOrder}
+                        >
+                            Clear Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
+    if (checkoutStep === 'payment') {
+        return (
+            <div className="transaction-screen">
+                <div className="transaction-heading">
+                    <button
+                        className="back-button"
+                        onClick={() => setCheckoutStep('details')}
+                    >
+                        ← Order Details
+                    </button>
+
+                    <h1>Payment Method</h1>
+                </div>
+
+                <div className="checkout-container">
+                    <div className="checkout-summary">
+                        <h2>
+                            {customerName.trim() || 'Customer Order'}
+                        </h2>
+
+                        <div className="checkout-total">
+                            <span>Subtotal</span>
+                            <strong>{formatPrice(subtotal)}</strong>
+                        </div>
+
+                        {orderNote.trim() && (
+                            <div className="checkout-note-preview">
+                                <strong>Note</strong>
+                                <p>{orderNote}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    <h2>Select Payment Method</h2>
+
+                    <div className="payment-options">
+                        <button
+                            className={`payment-option ${paymentMethod === 'cash' ? 'selected' : ''
+                                }`}
+                            onClick={() => setPaymentMethod('cash')}
+                        >
+                            Cash
+                        </button>
+
+                        <button
+                            className={`payment-option ${paymentMethod === 'card' ? 'selected' : ''
+                                }`}
+                            onClick={() => setPaymentMethod('card')}
+                        >
+                            Card
+                        </button>
+                    </div>
+
+                    <p className="payment-message">
+                        {paymentMethod
+                            ? `${paymentMethod === 'cash' ? 'Cash' : 'Card'
+                            } selected. Payment processing will be added next.`
+                            : 'Choose a payment method to continue.'}
+                    </p>
+
+                    <div className="checkout-actions">
+                        <button
+                            className="clear-order"
+                            onClick={clearOrder}
+                        >
+                            Clear Order
+                        </button>
+
+                        <button
+                            className="back-button"
+                            onClick={() => setCheckoutStep('details')}
+                        >
+                            Edit Order Details
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
 
     return (
         <div className="transaction-screen">
@@ -608,8 +833,39 @@ function TransactionScreen({ onBack, inventory }) {
                     )}
                 </section>
 
+
                 <aside className="order-summary">
-                    <h2>Current Order</h2>
+                    <div className="order-summary-header">
+                        <h2>Current Order</h2>
+
+                        <button
+                            type="button"
+                            className="clear-order-icon"
+                            onClick={clearOrder}
+                            disabled={cart.length === 0}
+                            aria-label="Clear order"
+                            title="Clear Order"
+                        >
+                            <svg
+                                width="19"
+                                height="19"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="1.8"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path d="M3 6h18" />
+                                <path d="M8 6V4h8v2" />
+                                <path d="M19 6l-1 14H6L5 6" />
+                                <path d="M10 10v6" />
+                                <path d="M14 10v6" />
+                            </svg>
+                        </button>
+                    </div>
+
 
                     <div className="cart-items">
                         {cart.length === 0 ? (
@@ -681,11 +937,11 @@ function TransactionScreen({ onBack, inventory }) {
                         </div>
 
                         <button
-                            className="clear-order"
-                            onClick={() => setCart([])}
+                            className="add-to-order"
+                            onClick={submitOrder}
                             disabled={cart.length === 0}
                         >
-                            Clear Order
+                            Submit Order · {formatPrice(subtotal)}
                         </button>
                     </div>
                 </aside>

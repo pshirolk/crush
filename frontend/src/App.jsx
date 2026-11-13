@@ -134,7 +134,7 @@ function App() {
     <div className="app">
       <header className="header">
         <div className="logo" onClick={() => setCurrentScreen('home')}>
-          crush<span>.</span>
+          <img src="/ccLogo.png" alt="Crush Logo" />
         </div>
         <div className="header-label">POINT OF SALE</div>
       </header>
@@ -143,8 +143,7 @@ function App() {
         {currentScreen === 'home' ? (
           <>
             <div className="welcome">
-              <p>{date}</p>
-              <h1>Welcome to crush.</h1>
+              <h1>{date}</h1>
               <p>What would you like to do?</p>
             </div>
 
