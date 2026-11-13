@@ -159,6 +159,9 @@ const modifierConfig = {
     },
 }
 
+// Temporary tax configuration. Set applicable product tax rules before checkout goes live.
+const TAX_RATE = 0
+const roundMoney = (amount) => Math.round((amount + Number.EPSILON) * 100) / 100
 const formatPrice = (price) => `$${price.toFixed(2)}`
 
 function TransactionScreen({ onBack, inventory }) {
@@ -171,6 +174,8 @@ function TransactionScreen({ onBack, inventory }) {
     const [customerName, setCustomerName] = useState('')
     const [orderNote, setOrderNote] = useState('')
     const [paymentMethod, setPaymentMethod] = useState('')
+    const [tipChoice, setTipChoice] = useState('0')
+    const [customTip, setCustomTip] = useState('')
 
     const iceStatus = inventory[modifierStockKey('ice')] || 'available'
     const iceSoldOut = iceStatus === 'soldout'
@@ -372,6 +377,13 @@ function TransactionScreen({ onBack, inventory }) {
         0
     )
 
+    const tax = roundMoney(subtotal * TAX_RATE)
+    const customTipValid = /^\d*(\.\d{0,2})?$/.test(customTip)
+    const tip = tipChoice === 'custom'
+        ? customTipValid ? roundMoney(Number(customTip || 0)) : 0
+        : roundMoney(subtotal * Number(tipChoice) / 100)
+    const total = roundMoney(subtotal + tax + tip)
+
     const clearOrder = () => {
         setCart([])
         setSelectedProduct(null)
@@ -380,6 +392,8 @@ function TransactionScreen({ onBack, inventory }) {
         setCustomerName('')
         setOrderNote('')
         setPaymentMethod('')
+        setTipChoice('0')
+        setCustomTip('')
         setCheckoutStep('cart')
     }
 
@@ -528,27 +542,15 @@ function TransactionScreen({ onBack, inventory }) {
         return (
             <div className="transaction-screen">
                 <div className="transaction-heading">
-                    <button
-                        className="back-button"
-                        onClick={() => setCheckoutStep('details')}
-                    >
+                    <button className="back-button" onClick={() => setCheckoutStep('details')}>
                         ← Order Details
                     </button>
-
                     <h1>Payment Method</h1>
                 </div>
 
                 <div className="checkout-container">
                     <div className="checkout-summary">
-                        <h2>
-                            {customerName.trim() || 'Customer Order'}
-                        </h2>
-
-                        <div className="checkout-total">
-                            <span>Subtotal</span>
-                            <strong>{formatPrice(subtotal)}</strong>
-                        </div>
-
+                        <h2>{customerName.trim() || 'Customer Order'}</h2>
                         {orderNote.trim() && (
                             <div className="checkout-note-preview">
                                 <strong>Note</strong>
@@ -557,20 +559,65 @@ function TransactionScreen({ onBack, inventory }) {
                         )}
                     </div>
 
-                    <h2>Select Payment Method</h2>
+                    <h2>Add a Tip</h2>
+                    <div className="tip-options" role="group" aria-label="Tip percentage">
+                        {[
+                            { id: '0', label: 'No Tip' },
+                            { id: '15', label: '15%' },
+                            { id: '20', label: '20%' },
+                            { id: '25', label: '25%' },
+                        ].map((option) => (
+                            <button
+                                key={option.id}
+                                type="button"
+                                className={`tip-option ${tipChoice === option.id ? 'selected' : ''}`}
+                                aria-pressed={tipChoice === option.id}
+                                onClick={() => setTipChoice(option.id)}
+                            >
+                                {option.label}
+                            </button>
+                        ))}
+                    </div>
 
+                    <div className="checkout-field custom-tip-field">
+                        <label htmlFor="custom-tip">Custom Tip ($)</label>
+                        <input
+                            id="custom-tip"
+                            type="text"
+                            inputMode="decimal"
+                            placeholder="0.00"
+                            value={customTip}
+                            aria-invalid={!customTipValid}
+                            onFocus={() => setTipChoice('custom')}
+                            onChange={(event) => {
+                                setCustomTip(event.target.value)
+                                setTipChoice('custom')
+                            }}
+                        />
+                        {!customTipValid && <p role="alert">Enter a valid dollar amount (up to two decimal places).</p>}
+                    </div>
+
+                    <div className="payment-breakdown">
+                        <div><span>Subtotal</span><span>{formatPrice(subtotal)}</span></div>
+                        <div><span>Tax (not configured)</span><span>{formatPrice(tax)}</span></div>
+                        <div><span>Tip</span><span>{formatPrice(tip)}</span></div>
+                        <div className="payment-total"><strong>Total</strong><strong>{formatPrice(total)}</strong></div>
+                    </div>
+
+                    <h2>Select Payment Method</h2>
                     <div className="payment-options">
                         <button
-                            className={`payment-option ${paymentMethod === 'cash' ? 'selected' : ''
-                                }`}
+                            type="button"
+                            className={`payment-option ${paymentMethod === 'cash' ? 'selected' : ''}`}
+                            aria-pressed={paymentMethod === 'cash'}
                             onClick={() => setPaymentMethod('cash')}
                         >
                             Cash
                         </button>
-
                         <button
-                            className={`payment-option ${paymentMethod === 'card' ? 'selected' : ''
-                                }`}
+                            type="button"
+                            className={`payment-option ${paymentMethod === 'card' ? 'selected' : ''}`}
+                            aria-pressed={paymentMethod === 'card'}
                             onClick={() => setPaymentMethod('card')}
                         >
                             Card
@@ -579,23 +626,13 @@ function TransactionScreen({ onBack, inventory }) {
 
                     <p className="payment-message">
                         {paymentMethod
-                            ? `${paymentMethod === 'cash' ? 'Cash' : 'Card'
-                            } selected. Payment processing will be added next.`
+                            ? `${paymentMethod === 'cash' ? 'Cash' : 'Card'} selected. Transaction saving and payment processing are not yet enabled.`
                             : 'Choose a payment method to continue.'}
                     </p>
 
                     <div className="checkout-actions">
-                        <button
-                            className="clear-order"
-                            onClick={clearOrder}
-                        >
-                            Clear Order
-                        </button>
-
-                        <button
-                            className="back-button"
-                            onClick={() => setCheckoutStep('details')}
-                        >
+                        <button className="clear-order" onClick={clearOrder}>Clear Order</button>
+                        <button className="back-button" onClick={() => setCheckoutStep('details')}>
                             Edit Order Details
                         </button>
                     </div>

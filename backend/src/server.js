@@ -1,8 +1,8 @@
-require("dotenv").config();
-
-const express = require("express");
-const cors = require("cors");
-const pool = require("./config/db");
+import 'dotenv/config'
+import ordersRouter from "./routes/orders.js";
+import express from 'express'
+import cors from 'cors'
+import pool from './config/db.js'
 
 const PORT = process.env.PORT || 5001;
 
@@ -18,43 +18,37 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-
-app.get('/api/inventory', async (req, res) => {
+app.get("/api/inventory", async (req, res) => {
   try {
-    const result = await pool.query(
-      'SELECT item_key, status FROM inventory'
-    )
+    const result = await pool.query("SELECT item_key, status FROM inventory");
 
     const inventory = Object.fromEntries(
-      result.rows.map((row) => [
-        row.item_key,
-        row.status,
-      ])
-    )
+      result.rows.map((row) => [row.item_key, row.status])
+    );
 
-    res.json(inventory)
+    res.json(inventory);
   } catch (error) {
-    console.error('Error loading inventory:', error)
+    console.error("Error loading inventory:", error);
     res.status(500).json({
-      error: 'Failed to load inventory',
-    })
+      error: "Failed to load inventory",
+    });
   }
-})
+});
 
-app.put('/api/inventory/:key', async (req, res) => {
-  const { key } = req.params
-  const { status } = req.body
+app.put("/api/inventory/:key", async (req, res) => {
+  const { key } = req.params;
+  const { status } = req.body;
 
-  if (!['available', 'low', 'soldout'].includes(status)) {
+  if (!["available", "low", "soldout"].includes(status)) {
     return res.status(400).json({
-      error: 'Invalid inventory status',
-    })
+      error: "Invalid inventory status",
+    });
   }
 
   if (!/^(product|modifier):[a-zA-Z0-9-]+$/.test(key)) {
     return res.status(400).json({
-      error: 'Invalid inventory key',
-    })
+      error: "Invalid inventory key",
+    });
   }
 
   try {
@@ -67,16 +61,16 @@ app.put('/api/inventory/:key', async (req, res) => {
          updated_at = NOW()
        RETURNING item_key, status`,
       [key, status]
-    )
+    );
 
-    res.json(result.rows[0])
+    res.json(result.rows[0]);
   } catch (error) {
-    console.error('Error updating inventory:', error)
+    console.error("Error updating inventory:", error);
     res.status(500).json({
-      error: 'Failed to update inventory',
-    })
+      error: "Failed to update inventory",
+    });
   }
-})
+});
 
 // Start server
 app.listen(PORT, () => {
@@ -93,3 +87,5 @@ pool
   .catch((error) => {
     console.error("Database connection failed:", error.message);
   });
+
+app.use("/api/orders", ordersRouter);
