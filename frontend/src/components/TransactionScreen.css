@@ -726,3 +726,198 @@
   font-size: 14px;
   margin: 12px 0;
 }
+
+
+/* Compact checkout layout */
+
+.compact-checkout {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.compact-checkout .transaction-heading {
+  flex-shrink: 0;
+  margin: 0 0 6px;
+}
+
+.compact-checkout .transaction-heading h1 {
+  font-size: 24px;
+  margin: 6px 0 0;
+}
+
+.compact-checkout .checkout-container {
+  width: 100%;
+  margin: 0;
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+}
+
+.compact-checkout .checkout-container h2 {
+  font-size: 17px;
+  margin: 0;
+}
+
+.compact-checkout .checkout-field {
+  margin: 0;
+  gap: 4px;
+}
+
+.compact-checkout .checkout-field label {
+  font-size: 13px;
+}
+
+.compact-checkout .checkout-field input,
+.compact-checkout .checkout-field textarea {
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.compact-checkout .checkout-field textarea {
+  height: 48px;
+  min-height: 48px;
+  resize: none;
+}
+
+.compact-checkout .checkout-summary {
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+}
+
+.compact-checkout .checkout-summary h2 {
+  margin-bottom: 6px;
+}
+
+.compact-checkout .checkout-item {
+  padding: 5px 0;
+}
+
+.compact-checkout .checkout-item .cart-modifiers {
+  margin-top: 3px;
+  gap: 2px;
+  font-size: 11px;
+}
+
+.compact-checkout .checkout-total {
+  margin-top: 6px;
+  padding-top: 6px;
+  font-size: 15px;
+}
+
+.compact-checkout .checkout-actions {
+  margin: 0;
+  gap: 6px;
+}
+
+.compact-checkout .checkout-actions button {
+  min-height: 34px;
+}
+
+.compact-checkout .add-to-order,
+.compact-checkout .clear-order {
+  padding: 9px 12px;
+  min-height: 36px;
+  margin-top: 0;
+  font-size: 13px;
+}
+
+.compact-checkout .tip-options {
+  margin: 0;
+  gap: 6px;
+}
+
+.compact-checkout .tip-option {
+  padding: 7px 8px;
+  font-size: 12px;
+}
+
+.compact-checkout .custom-tip-field {
+  margin: 0;
+}
+
+.compact-checkout .payment-breakdown {
+  margin: 0;
+  padding: 8px 0;
+  gap: 5px;
+  font-size: 13px;
+}
+
+.compact-checkout .payment-breakdown .payment-total {
+  margin-top: 2px;
+  padding-top: 6px;
+  font-size: 16px;
+}
+
+.compact-checkout .payment-options {
+  margin: 0;
+  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.compact-checkout .payment-option {
+  padding: 9px;
+  font-size: 13px;
+}
+
+.compact-checkout .payment-message {
+  margin: 0;
+  font-size: 11px;
+}
+
+/* Confirmation screen */
+
+.compact-checkout .order-confirmation {
+  padding: 8px 0;
+}
+
+.compact-checkout .confirmation-check {
+  width: 42px;
+  height: 42px;
+  font-size: 23px;
+  margin: 0 auto 6px;
+}
+
+.compact-checkout .order-confirmation h2 {
+  margin: 4px 0;
+}
+
+.compact-checkout .confirmation-label {
+  margin: 6px 0 0;
+}
+
+.compact-checkout .confirmation-number {
+  font-size: 32px;
+  margin: 4px 0;
+}
+
+/* Keep long order summaries from expanding the checkout */
+
+.compact-checkout .checkout-summary:has(.checkout-item) {
+  overflow-y: auto;
+  flex: 1 1 auto;
+}
+
+/* Shorter desktop screens */
+
+@media (max-height: 750px) {
+  .compact-checkout .checkout-container {
+    padding: 10px 16px;
+    gap: 5px;
+  }
+
+  .compact-checkout .transaction-heading h1 {
+    font-size: 21px;
+  }
+
+  .compact-checkout .checkout-field textarea {
+    height: 38px;
+    min-height: 38px;
+  }
+}

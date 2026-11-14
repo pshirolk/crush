@@ -147,7 +147,8 @@ function App() {
         <div className="header-label">REGISTER 1</div>
       </header>
 
-      <main className={`main ${currentScreen === 'home' ? 'home-main' : ''}`}>
+      <main className={`main ${currentScreen === 'home' ? 'home-main' : 'workspace-main'
+        }`}>
         {currentScreen === 'home' ? (
           <>
             <div className="welcome">
@@ -214,7 +215,6 @@ function App() {
             </h1>
           </div>
         )}
-
       </main>
 
       <footer className="footer">

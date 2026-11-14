@@ -222,4 +222,71 @@
       padding: 20px;
     }
   }
+
+  .workspace-main .transactions-screen {
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
   
+  .workspace-main .transactions-heading {
+    flex-shrink: 0;
+    margin: 12px 0;
+  }
+  
+  .workspace-main .transactions-search {
+    flex-shrink: 0;
+    margin-bottom: 12px;
+  }
+  
+  .workspace-main .transactions-table-wrapper {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+  }
+
+  .transactions-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 20px;
+    font-size: 13px;
+  }
+  
+  .pagination-info {
+    color: #666;
+  }
+  
+  .pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  
+  .pagination-controls button {
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    border-radius: 8px;
+    padding: 9px 14px;
+    color: var(--color-text);
+    font: inherit;
+    cursor: pointer;
+  }
+  
+  .pagination-controls button:hover:not(:disabled) {
+    background: #eae5db;
+  }
+  
+  .pagination-controls button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 600px) {
+    .transactions-pagination {
+      flex-direction: column;
+      align-items: center;
+    }
+  }

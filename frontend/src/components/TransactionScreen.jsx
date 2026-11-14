@@ -530,7 +530,7 @@ function TransactionScreen({ onBack, inventory = {} }) {
 
     if (checkoutStep === 'details') {
         return (
-            <div className="transaction-screen">
+            <div className="transaction-screen compact-checkout">
                 <div className="transaction-heading">
                     <button
                         className="back-button"
@@ -651,7 +651,7 @@ function TransactionScreen({ onBack, inventory = {} }) {
 
     if (checkoutStep === 'confirmation' && completedOrder) {
         return (
-            <div className="transaction-screen">
+            <div className="transaction-screen compact-checkout">
                 <div className="transaction-heading">
                     <h1>Order Confirmation</h1>
                 </div>
@@ -722,7 +722,7 @@ function TransactionScreen({ onBack, inventory = {} }) {
 
     if (checkoutStep === 'payment') {
         return (
-            <div className="transaction-screen">
+            <div className="transaction-screen compact-checkout">
                 <div className="transaction-heading">
                     <button
                         className="back-button"
