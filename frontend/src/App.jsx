@@ -3,6 +3,7 @@ import TransactionScreen from './components/TransactionScreen'
 import Screensaver from './components/Screensaver'
 import InventoryScreen from './components/InventoryScreen'
 import { products } from './data/products'
+import TransactionHistory from './components/TransactionHistory'
 import './App.css'
 
 function App() {
@@ -17,14 +18,14 @@ function App() {
     const updateClock = () => {
       setCurrentTime(new Date())
     }
-  
+
     updateClock()
-  
+
     const clockInterval = setInterval(updateClock, 1000)
-  
+
     return () => clearInterval(clockInterval)
   }, [])
-  
+
   useEffect(() => {
     let cancelled = false
 
@@ -88,9 +89,6 @@ function App() {
     }))
   }
 
-
-
-
   useEffect(() => {
     let inactivityTimer
 
@@ -146,7 +144,7 @@ function App() {
         <div className="logo" onClick={() => setCurrentScreen('home')}>
           <img src="/ccLogo.png" alt="Crush Logo" />
         </div>
-        <div className="header-label">POINT OF SALE</div>
+        <div className="header-label">REGISTER 1</div>
       </header>
 
       <main className={`main ${currentScreen === 'home' ? 'home-main' : ''}`}>
@@ -175,7 +173,12 @@ function App() {
 
           </>
 
-          // Prevent ordering before inventory has loaded
+
+        ) : currentScreen === 'transactions' ? (
+          <TransactionHistory
+            onBack={() => setCurrentScreen('home')}
+          />
+
         ) : currentScreen === 'transaction' ? (
           inventoryLoading ? (
             <p>Loading inventory...</p>
@@ -187,6 +190,7 @@ function App() {
               inventory={inventory}
             />
           )
+
         ) : currentScreen === 'inventory' ? (
           <InventoryScreen
             products={products}
@@ -194,6 +198,7 @@ function App() {
             updateInventoryStatus={updateInventoryStatus}
             onBack={() => setCurrentScreen('home')}
           />
+
         ) : (
           <div className="placeholder-screen">
             <button
@@ -202,12 +207,14 @@ function App() {
             >
               ← Home
             </button>
+
             <h1>
               {currentScreen.charAt(0).toUpperCase() +
                 currentScreen.slice(1)}
             </h1>
           </div>
         )}
+
       </main>
 
       <footer className="footer">

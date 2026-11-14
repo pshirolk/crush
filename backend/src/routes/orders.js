@@ -1,93 +1,80 @@
+import express from "express";
+import pool from "../config/db.js";
 
-import express from 'express'
-import pool from '../config/db.js'
+const router = express.Router();
 
-const router = express.Router()
+router.post("/", async (req, res) => {
+  const client = await pool.connect();
 
-router.post('/', async (req, res) => {
-    const client = await pool.connect()
+  try {
+    const { customerName, orderNote, items, paymentMethod, tip = 0 } = req.body;
 
-    try {
-        const {
-            customerName,
-            orderNote,
-            items,
-            paymentMethod,
-            tip = 0
-        } = req.body
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({
+        error: "Order must contain at least one item.",
+      });
+    }
 
-        if (!Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({
-                error: 'Order must contain at least one item.'
-            })
-        }
+    if (!["cash", "card"].includes(paymentMethod)) {
+      return res.status(400).json({
+        error: "Invalid payment method.",
+      });
+    }
 
-        if (!['cash', 'card'].includes(paymentMethod)) {
-            return res.status(400).json({
-                error: 'Invalid payment method.'
-            })
-        }
+    // Temporary development values.
+    // Product pricing and taxes must be validated server-side
+    // before accepting real transactions.
+    const subtotal = items.reduce(
+      (sum, item) => sum + Number(item.unitPrice) * Number(item.quantity),
+      0
+    );
 
-        // Temporary development values.
-        // Product pricing and taxes must be validated server-side
-        // before accepting real transactions.
-        const subtotal = items.reduce(
-            (sum, item) => sum + Number(item.unitPrice) * Number(item.quantity),
-            0
-        )
+    const tax = 0;
+    const tipAmount = Number(tip);
+    const total = subtotal + tax + tipAmount;
 
-        const tax = 0
-        const tipAmount = Number(tip)
-        const total = subtotal + tax + tipAmount
+    if (
+      !Number.isFinite(subtotal) ||
+      !Number.isFinite(tipAmount) ||
+      tipAmount < 0 ||
+      items.some(
+        (item) =>
+          !Number.isInteger(Number(item.quantity)) ||
+          Number(item.quantity) <= 0 ||
+          !Number.isFinite(Number(item.unitPrice)) ||
+          Number(item.unitPrice) < 0
+      )
+    ) {
+      return res.status(400).json({
+        error: "Invalid order amounts.",
+      });
+    }
 
-        if (
-            !Number.isFinite(subtotal) ||
-            !Number.isFinite(tipAmount) ||
-            tipAmount < 0 ||
-            items.some(item =>
-                !Number.isInteger(Number(item.quantity)) ||
-                Number(item.quantity) <= 0 ||
-                !Number.isFinite(Number(item.unitPrice)) ||
-                Number(item.unitPrice) < 0
+    await client.query("BEGIN");
+
+    const orderResult = await client.query(
+      `INSERT INTO orders (
+              customer_name, order_note, subtotal, tax, tip, total,
+              payment_method, payment_status, status
             )
-        ) {
-            return res.status(400).json({
-                error: 'Invalid order amounts.'
-            })
-        }
-
-        await client.query('BEGIN')
-
-        const orderResult = await client.query(
-            `INSERT INTO orders (
-                customer_name,
-                order_note,
-                subtotal,
-                tax,
-                tip,
-                total,
-                payment_method,
-                payment_status,
-                status
-            )
-            VALUES ($1, $2, $3, $4, $5, $6, $7, 'unpaid', 'pending')
+            VALUES ($1, $2, $3, $4, $5, $6, $7, 'paid', 'completed')
             RETURNING id, order_number, total, status`,
-            [
-                customerName?.trim() || null,
-                orderNote?.trim() || null,
-                subtotal.toFixed(2),
-                tax.toFixed(2),
-                tipAmount.toFixed(2),
-                total.toFixed(2),
-                paymentMethod
-            ]
-        )
+      [
+        customerName?.trim() || null,
+        orderNote?.trim() || null,
+        subtotal.toFixed(2),
+        tax.toFixed(2),
+        tipAmount.toFixed(2),
+        total.toFixed(2),
+        paymentMethod,
+      ]
+    );
 
-        const order = orderResult.rows[0]
+    const order = orderResult.rows[0];
 
-        for (const item of items) {
-            await client.query(
-                `INSERT INTO order_items (
+    for (const item of items) {
+      await client.query(
+        `INSERT INTO order_items (
                     order_id,
                     product_id,
                     product_name,
@@ -97,40 +84,94 @@ router.post('/', async (req, res) => {
                     modifiers
                 )
                 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                [
-                    order.id,
-                    item.id,
-                    item.name,
-                    item.quantity,
-                    item.unitPrice,
-                    (item.unitPrice * item.quantity).toFixed(2),
-                    JSON.stringify({
-                        addOns: item.addOns || [],
-                        substitutions: item.substitutions || {}
-                    })
-                ]
-            )
-        }
-
-        await client.query('COMMIT')
-
-        res.status(201).json({
-            message: 'Order created successfully.',
-            order: {
-                ...order,
-                displayNumber: `#${String(order.order_number).padStart(6, '0')}`
-            }
-        })
-    } catch (error) {
-        await client.query('ROLLBACK')
-        console.error('Error creating order:', error)
-
-        res.status(500).json({
-            error: 'Failed to create order.'
-        })
-    } finally {
-        client.release()
+        [
+          order.id,
+          item.id,
+          item.name,
+          item.quantity,
+          item.unitPrice,
+          (item.unitPrice * item.quantity).toFixed(2),
+          JSON.stringify({
+            addOns: item.addOns || [],
+            substitutions: item.substitutions || {},
+          }),
+        ]
+      );
     }
-})
 
-export default router
+    await client.query("COMMIT");
+
+    res.status(201).json({
+      message: "Order created successfully.",
+      order: {
+        ...order,
+        displayNumber: `#${String(order.order_number).padStart(6, "0")}`,
+      },
+    });
+  } catch (error) {
+    await client.query("ROLLBACK");
+    console.error("Error creating order:", error);
+
+    res.status(500).json({
+      error: "Failed to create order.",
+    });
+  } finally {
+    client.release();
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const result = await pool.query(`
+        SELECT
+          o.id,
+          o.order_number,
+          o.customer_name,
+          o.order_note,
+          o.subtotal,
+          o.tax,
+          o.tip,
+          o.total,
+          o.payment_method,
+          o.payment_status,
+          o.status,
+          o.created_at,
+          COALESCE(
+            (
+              SELECT json_agg(
+                json_build_object(
+                  'id', oi.id,
+                  'name', oi.product_name,
+                  'quantity', oi.quantity,
+                  'unitPrice', oi.unit_price,
+                  'lineTotal', oi.line_total,
+                  'modifiers', oi.modifiers
+                )
+                ORDER BY oi.id
+              )
+              FROM order_items oi
+              WHERE oi.order_id = o.id
+            ),
+            '[]'::json
+          ) AS items
+        FROM orders o
+        WHERE o.payment_status = 'paid'
+          AND o.status = 'completed'
+        ORDER BY o.created_at DESC, o.id DESC
+      `);
+
+    const transactions = result.rows.map((order) => ({
+      ...order,
+      displayNumber: `#${String(order.order_number).padStart(6, "0")}`,
+    }));
+
+    res.json(transactions);
+  } catch (error) {
+    console.error("Error fetching transactions:", error);
+    res.status(500).json({
+      error: "Failed to fetch transactions.",
+    });
+  }
+});
+
+export default router;

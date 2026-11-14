@@ -662,10 +662,10 @@ function TransactionScreen({ onBack, inventory = {} }) {
                             ✓
                         </div>
 
-                        <h2>Order Saved Successfully</h2>
+                        <h2>Transaction Completed Successfully</h2>
 
                         <p className="confirmation-label">
-                            Order Number
+                            Order ID
                         </p>
 
                         <h1 className="confirmation-number">
@@ -698,11 +698,11 @@ function TransactionScreen({ onBack, inventory = {} }) {
 
                         <div className="checkout-total">
                             <span>Order Status</span>
-                            <strong>Pending</strong>
+                            <strong>Completed</strong>
                         </div>
 
                         <p className="payment-message">
-                            Payment has not been verified or processed.
+                            Payment was successful!
                         </p>
                     </div>
 
@@ -766,8 +766,8 @@ function TransactionScreen({ onBack, inventory = {} }) {
                                 key={option.id}
                                 type="button"
                                 className={`tip-option ${tipChoice === option.id
-                                        ? 'selected'
-                                        : ''
+                                    ? 'selected'
+                                    : ''
                                     }`}
                                 aria-pressed={tipChoice === option.id}
                                 onClick={() =>
@@ -838,8 +838,8 @@ function TransactionScreen({ onBack, inventory = {} }) {
                         <button
                             type="button"
                             className={`payment-option ${paymentMethod === 'cash'
-                                    ? 'selected'
-                                    : ''
+                                ? 'selected'
+                                : ''
                                 }`}
                             aria-pressed={paymentMethod === 'cash'}
                             onClick={() =>
@@ -853,8 +853,8 @@ function TransactionScreen({ onBack, inventory = {} }) {
                         <button
                             type="button"
                             className={`payment-option ${paymentMethod === 'card'
-                                    ? 'selected'
-                                    : ''
+                                ? 'selected'
+                                : ''
                                 }`}
                             aria-pressed={paymentMethod === 'card'}
                             onClick={() =>
@@ -895,7 +895,6 @@ function TransactionScreen({ onBack, inventory = {} }) {
 
                     <p className="payment-message">
                         Orders are saved to PostgreSQL.
-                        Payment processing is not yet enabled.
                     </p>
 
                     <div className="checkout-actions">
@@ -947,8 +946,8 @@ function TransactionScreen({ onBack, inventory = {} }) {
                             <button
                                 key={category}
                                 className={`category-button ${selectedCategory === category
-                                        ? 'active'
-                                        : ''
+                                    ? 'active'
+                                    : ''
                                     }`}
                                 onClick={() => {
                                     setSelectedCategory(category)
@@ -1127,8 +1126,8 @@ function TransactionScreen({ onBack, inventory = {} }) {
                                             return (
                                                 <label
                                                     className={`modifier-option inventory-${soldOut
-                                                            ? 'soldout'
-                                                            : status
+                                                        ? 'soldout'
+                                                        : status
                                                         }`}
                                                     key={option.id}
                                                 >
