@@ -19,25 +19,43 @@ I built Crush POS to explore full-stack application development, relational data
 ## Screenshots
 
 ### Home Screen
+
 ![Crush POS Home Screen](screenshots/home.png)
 
-### Point of Sale
-![Crush POS Order Interface](screenshots/order.png)
+### Application Features
 
-### Transactions
-![Crush POS Transaction History](screenshots/transactions.png)
-
-### Inventory
-![Crush POS Inventory Management](screenshots/inventory.png)
-
-### Employee Shift Tracking
-![Crush POS Employee Shift Tracking](screenshots/shift.png)
-
-### Administration
-![Crush POS Administration](screenshots/admin.png)
-
-### Sales Reports
-![Crush POS Sales Reports](screenshots/sales.png)
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <strong>Point of Sale</strong>
+      <img src="screenshots/order.png" alt="Crush POS Order Interface" width="100%">
+    </td>
+    <td width="50%" align="center">
+      <strong>Transactions</strong>
+      <img src="screenshots/transactions.png" alt="Crush POS Transactions" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>Inventory</strong>
+      <img src="screenshots/inventory.png" alt="Crush POS Inventory" width="100%">
+    </td>
+    <td align="center">
+      <strong>Employee Shift Tracking</strong>
+      <img src="screenshots/shift.png" alt="Crush POS Shift Tracking" width="100%">
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <strong>Administration</strong>
+      <img src="screenshots/admin.png" alt="Crush POS Administration" width="100%">
+    </td>
+    <td align="center">
+      <strong>Sales Reports</strong>
+      <img src="screenshots/sales.png" alt="Crush POS Sales Reports" width="100%">
+    </td>
+  </tr>
+</table>
 
 ## Features
 
@@ -173,4 +191,4 @@ The application runs locally at:
 
 Core functionality for order processing, employee time tracking, administrator access, and sales reporting **has been implemented.**
 
-Inventory functionality and additional improvements are ongoing.
+Branding and additional improvements are ongoing.
