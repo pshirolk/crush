@@ -161,6 +161,7 @@ function AdminShiftHistory() {
                 <button
                     type="button"
                     className="admin-shift-clear"
+                    disabled={employeeFilter === 'all' && !dateFilter}
                     onClick={() => {
                         setEmployeeFilter('all')
                         setDateFilter('')
@@ -217,10 +218,10 @@ function AdminShiftHistory() {
                                     <td>
                                         <span
                                             className={`admin-shift-status ${shift.clock_out
-                                                    ? 'completed'
-                                                    : shift.break_start && !shift.break_end
-                                                        ? 'break'
-                                                        : 'active'
+                                                ? 'completed'
+                                                : shift.break_start && !shift.break_end
+                                                    ? 'break'
+                                                    : 'active'
                                                 }`}
                                         >
                                             {shift.clock_out

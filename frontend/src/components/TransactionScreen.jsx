@@ -701,9 +701,6 @@ function TransactionScreen({ onBack, inventory = {} }) {
                             <strong>Completed</strong>
                         </div>
 
-                        <p className="payment-message">
-                            Payment was successful!
-                        </p>
                     </div>
 
                     <button
@@ -892,10 +889,6 @@ function TransactionScreen({ onBack, inventory = {} }) {
                             ? 'Saving Order...'
                             : `Complete Transaction · ${formatPrice(total)}`}
                     </button>
-
-                    <p className="payment-message">
-                        Orders are saved to PostgreSQL.
-                    </p>
 
                     <div className="checkout-actions">
                         <button

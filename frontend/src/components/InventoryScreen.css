@@ -87,3 +87,13 @@
     text-decoration: line-through;
   }
     
+  /* Sold Out section */
+.inventory-sold-out {
+  background-color: rgb(221, 219,214);
+}
+
+/* Running Low section */
+.inventory-running-low {
+  background-color: rgb(236, 234, 229);
+}
+

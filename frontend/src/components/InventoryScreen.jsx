@@ -132,7 +132,7 @@ function InventoryScreen({
 
       {/* Inventory alerts */}
       <div className="inventory-alerts">
-        <div className="inventory-group">
+        <div className="inventory-group inventory-sold-out">
           <h2>Sold Out ({soldOut.length})</h2>
 
           {soldOut.length === 0 && (
@@ -142,7 +142,7 @@ function InventoryScreen({
           {soldOut.map(alertRow)}
         </div>
 
-        <div className="inventory-group">
+        <div className="inventory-group inventory-running-low">
           <h2>Running Low ({runningLow.length})</h2>
 
           {runningLow.length === 0 && (

@@ -1,165 +1,238 @@
+.admin-shift-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.admin-shift-header h2 {
+  font-size: 20px;
+  margin: 0 0 6px;
+}
+
+.admin-shift-header p {
+  font-size: 13px;
+  color: #71695f;
+  margin: 0;
+}
+
+.admin-shift-count {
+  font-size: 12px;
+  background: #e7dfd3;
+  border-radius: 20px;
+  padding: 7px 12px;
+  white-space: nowrap;
+}
+
+.admin-shift-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.admin-shift-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.admin-shift-filter label {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.admin-shift-filter select,
+.admin-shift-filter input {
+  padding: 10px 12px;
+  border: 1px solid #d8d1c5;
+  border-radius: 8px;
+  background: #fffdf8;
+  color: #231f1e;
+  font: inherit;
+  font-size: 13px;
+  min-height: 40px;
+}
+
+.admin-shift-clear {
+  padding: 10px 14px;
+  min-height: 40px;
+  background: transparent;
+  border: 1px solid #d8d1c5;
+  border-radius: 8px;
+  color: #231f1e;
+  cursor: pointer;
+}
+
+.admin-shift-table-container {
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid #d8d1c5;
+  border-radius: 10px;
+}
+
+.admin-shift-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #e7dfd3;
+}
+
+.admin-shift-table {
+  width: 100%;
+  table-layout: auto;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+}
+
+.admin-shift-table th,
+.admin-shift-table td {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.admin-shift-table th {
+  padding: 14px 12px;
+  background: #e7dfd3;
+  font-weight: 600;
+  border-bottom: 1px solid #d8d1c5;
+}
+
+.admin-shift-table td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #e7dfd3;
+}
+
+.admin-shift-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.admin-shift-table tbody tr:hover {
+  background: #eee8dd;
+}
+
+.admin-shift-employee-number {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  color: #71695f;
+}
+
+.admin-shift-hours {
+  font-weight: 700;
+}
+
+.admin-shift-status {
+  
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  width: max-content;
+  max-width: none;
+}
+
+.admin-shift-table th:last-child,
+.admin-shift-table td:last-child {
+  min-width: 115px;
+  white-space: nowrap;
+}
+
+.admin-shift-status.completed {
+  background: #e2e8df;
+  color: #345a3c;
+}
+
+.admin-shift-status.active {
+  background: #e1e9f0;
+  color: #315a78;
+}
+
+.admin-shift-status.break {
+  background: #f2e5cf;
+  color: #805b27;
+}
+
+.admin-shift-empty {
+  text-align: center;
+  padding: 35px !important;
+  color: #71695f;
+}
+
+.admin-shift-error {
+  color: #a12b2b;
+}
+
+@media (max-width: 700px) {
+  .admin-shift-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .admin-shift-filter {
+    flex: 1;
+    min-width: 150px;
+  }
+}
 
 .admin-shift-history {
-    width: 100%;
-    color: #231f1e;
-  }
-  
-  .admin-shift-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 22px;
-  }
-  
-  .admin-shift-header h2 {
-    font-size: 20px;
-    margin: 0 0 6px;
-  }
-  
-  .admin-shift-header p {
-    font-size: 13px;
-    color: #71695f;
-    margin: 0;
-  }
-  
-  .admin-shift-count {
-    font-size: 12px;
-    background: #e7dfd3;
-    border-radius: 20px;
-    padding: 7px 12px;
-    white-space: nowrap;
-  }
-  
-  .admin-shift-filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-end;
-    gap: 14px;
-    margin-bottom: 20px;
-  }
-  
-  .admin-shift-filter {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
-  
-  .admin-shift-filter label {
-    font-size: 12px;
-    font-weight: 600;
-  }
-  
-  .admin-shift-filter select,
-  .admin-shift-filter input {
-    padding: 10px 12px;
-    border: 1px solid #d8d1c5;
-    border-radius: 8px;
-    background: #fffdf8;
-    color: #231f1e;
-    font: inherit;
-    font-size: 13px;
-    min-height: 40px;
-  }
-  
-  .admin-shift-clear {
-    padding: 10px 14px;
-    min-height: 40px;
-    background: transparent;
-    border: 1px solid #d8d1c5;
-    border-radius: 8px;
-    color: #231f1e;
-    cursor: pointer;
-  }
-  
-  .admin-shift-table-container {
-    width: 100%;
-    overflow-x: auto;
-    border: 1px solid #d8d1c5;
-    border-radius: 10px;
-  }
-  
-  .admin-shift-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-    font-size: 12px;
-    white-space: nowrap;
-  }
-  
-  .admin-shift-table th {
-    padding: 14px 12px;
-    background: #e7dfd3;
-    font-weight: 600;
-    border-bottom: 1px solid #d8d1c5;
-  }
-  
-  .admin-shift-table td {
-    padding: 14px 12px;
-    border-bottom: 1px solid #e7dfd3;
-  }
-  
-  .admin-shift-table tbody tr:last-child td {
-    border-bottom: none;
-  }
-  
-  .admin-shift-table tbody tr:hover {
-    background: #eee8dd;
-  }
-  
-  .admin-shift-employee-number {
-    display: block;
-    margin-top: 4px;
-    font-size: 11px;
-    color: #71695f;
-  }
-  
-  .admin-shift-hours {
-    font-weight: 700;
-  }
-  
-  .admin-shift-status {
-    display: inline-block;
-    padding: 6px 9px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-  }
-  
-  .admin-shift-status.completed {
-    background: #e2e8df;
-    color: #345a3c;
-  }
-  
-  .admin-shift-status.active {
-    background: #e1e9f0;
-    color: #315a78;
-  }
-  
-  .admin-shift-status.break {
-    background: #f2e5cf;
-    color: #805b27;
-  }
-  
-  .admin-shift-empty {
-    text-align: center;
-    padding: 35px !important;
-    color: #71695f;
-  }
-  
-  .admin-shift-error {
-    color: #a12b2b;
-  }
-  
-  @media (max-width: 700px) {
-    .admin-shift-header {
-      align-items: flex-start;
-      flex-direction: column;
-    }
-  
-    .admin-shift-filter {
-      flex: 1;
-      min-width: 150px;
-    }
-  }
-  
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+  width: 100%;
+  min-height: 0;
+  color: #231f1e;
+}
+
+.admin-shift-header,
+.admin-shift-filters {
+  flex-shrink: 0;
+}
+
+.admin-shift-table-container {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: none;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.admin-shift-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #e7dfd3;
+}
+
+.admin-shift-clear:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: #e7dfd3;
+  color: #71695f;
+}
+
+.admin-shift-clear:not(:disabled) {
+  cursor: pointer;
+}
+
+.admin-shift-clear:not(:disabled):hover {
+  background: #e7dfd3;
+}
