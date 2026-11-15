@@ -6,6 +6,7 @@ import { products } from './data/products'
 import TransactionHistory from './components/TransactionHistory'
 import EmployeeScreen from './components/EmployeeScreen'
 import AdministrationScreen from './components/AdministrationScreen'
+import ReportsScreen from './components/ReportsScreen'
 import './App.css'
 
 function App() {
@@ -208,6 +209,8 @@ function App() {
           <AdministrationScreen
             onBack={() => setCurrentScreen('home')}
           />
+        ) : currentScreen === 'reports' ? (
+          <ReportsScreen onBack={() => setCurrentScreen('home')} />
 
         ) : (
           <div className="placeholder-screen">

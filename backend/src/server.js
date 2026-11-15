@@ -6,6 +6,7 @@ import pool from "./config/db.js";
 import session from "express-session";
 import employeeRoutes from "./routes/employees.js";
 import adminRoutes from './routes/admin.js'
+import reportsRoutes from './routes/reports.js'
 
 const PORT = process.env.PORT || 5001;
 
@@ -97,6 +98,7 @@ app.put("/api/inventory/:key", async (req, res) => {
 
 app.use("/api/employees", employeeRoutes);
 app.use('/api/admin', adminRoutes)
+app.use('/api/reports', reportsRoutes)
 
 // Start server
 app.listen(PORT, () => {
