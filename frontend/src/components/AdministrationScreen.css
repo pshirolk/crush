@@ -1,0 +1,142 @@
+
+.administration-screen {
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .administration-screen > .back-button {
+    align-self: flex-start;
+    flex-shrink: 0;
+  }
+  
+  .administration-login {
+    width: min(100%, 440px);
+    margin: 24px auto;
+    padding: 28px;
+    background: #f4f0e7;
+    color: #231f1e;
+    border: 1px solid #d8d1c5;
+    border-radius: 14px;
+  }
+  
+  .administration-login h1 {
+    font-size: 26px;
+    margin: 0 0 8px;
+  }
+  
+  .administration-login > p {
+    font-size: 14px;
+    color: #71695f;
+    margin: 0 0 20px;
+  }
+  
+  .administration-login form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .administration-login label {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  
+  .administration-login input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #c8c0b5;
+    border-radius: 8px;
+    background: #fffdf8;
+    color: #231f1e;
+    font: inherit;
+    margin-bottom: 8px;
+  }
+  
+  .administration-primary-button {
+    width: 100%;
+    padding: 13px;
+    margin-top: 10px;
+    background: #231f1e;
+    color: #f4f0e7;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .administration-primary-button:disabled,
+  .administration-logout-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .administration-error {
+    color: #a12b2b;
+    font-size: 13px;
+    margin-top: 10px;
+  }
+  
+  .administration-dashboard {
+    width: min(100%, 1100px);
+    margin: 8px auto;
+    padding: 20px;
+    background: #f4f0e7;
+    color: #231f1e;
+    border: 1px solid #d8d1c5;
+    border-radius: 14px;
+  }
+  
+  .administration-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .administration-heading h1 {
+    font-size: 24px;
+    margin: 0 0 4px;
+  }
+  
+  .administration-heading p {
+    font-size: 13px;
+    color: #71695f;
+    margin: 0;
+  }
+  
+  .administration-logout-button {
+    padding: 10px 18px;
+    background: transparent;
+    color: #231f1e;
+    border: 1px solid #231f1e;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .administration-content {
+    padding: 20px;
+    border: 1px solid #d8d1c5;
+    border-radius: 10px;
+  }
+  
+  .administration-content h2 {
+    font-size: 18px;
+    margin: 0 0 8px;
+  }
+  
+  .administration-content p {
+    font-size: 14px;
+    color: #71695f;
+  }
+  
+  .administration-placeholder {
+    padding: 30px;
+    text-align: center;
+    background: #fffdf8;
+    border-radius: 8px;
+  }
+  

@@ -5,6 +5,7 @@ import InventoryScreen from './components/InventoryScreen'
 import { products } from './data/products'
 import TransactionHistory from './components/TransactionHistory'
 import EmployeeScreen from './components/EmployeeScreen'
+import AdministrationScreen from './components/AdministrationScreen'
 import './App.css'
 
 function App() {
@@ -159,7 +160,7 @@ function App() {
 
 
             <div className="home-actions">
-              {['New Order', 'Transactions', 'Inventory', 'Tips', 'Reports', 'Employees'].map((item) => (
+              {['New Order', 'Transactions', 'Inventory', 'Administration', 'Reports', 'Employees'].map((item) => (
                 <button
                   key={item}
                   className={`action-button ${item === 'New Order' ? 'primary' : 'secondary'}`}
@@ -202,6 +203,11 @@ function App() {
           />
         ) : currentScreen === 'employees' ? (
           <EmployeeScreen onBack={() => setCurrentScreen('home')} />
+
+        ) : currentScreen === 'administration' ? (
+          <AdministrationScreen
+            onBack={() => setCurrentScreen('home')}
+          />
 
         ) : (
           <div className="placeholder-screen">

@@ -432,3 +432,8 @@
   padding-top: 10px;
   padding-bottom: 10px;
 }
+
+.workspace-main:has(.employee-screen) {
+  min-height: 0;
+  overflow-y: auto;
+}
