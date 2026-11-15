@@ -1,15 +1,37 @@
-import 'dotenv/config'
+import "dotenv/config";
 import ordersRouter from "./routes/orders.js";
-import express from 'express'
-import cors from 'cors'
-import pool from './config/db.js'
+import express from "express";
+import cors from "cors";
+import pool from "./config/db.js";
+import session from "express-session";
+import employeeRoutes from "./routes/employees.js";
 
 const PORT = process.env.PORT || 5001;
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+app.use(
+  session({
+    name: "crush.employee.sid",
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: false,
+      maxAge: 8 * 60 * 60 * 1000,
+    },
+  })
+);
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -71,6 +93,8 @@ app.put("/api/inventory/:key", async (req, res) => {
     });
   }
 });
+
+app.use("/api/employees", employeeRoutes);
 
 // Start server
 app.listen(PORT, () => {

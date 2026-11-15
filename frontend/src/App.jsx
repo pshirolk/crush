@@ -4,6 +4,7 @@ import Screensaver from './components/Screensaver'
 import InventoryScreen from './components/InventoryScreen'
 import { products } from './data/products'
 import TransactionHistory from './components/TransactionHistory'
+import EmployeeScreen from './components/EmployeeScreen'
 import './App.css'
 
 function App() {
@@ -199,6 +200,8 @@ function App() {
             updateInventoryStatus={updateInventoryStatus}
             onBack={() => setCurrentScreen('home')}
           />
+        ) : currentScreen === 'employees' ? (
+          <EmployeeScreen onBack={() => setCurrentScreen('home')} />
 
         ) : (
           <div className="placeholder-screen">
