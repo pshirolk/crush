@@ -16,5 +16,6 @@ npm-debug.log*
 # macOS
 .DS_Store
 
-# Authentication session cookies
+# Authentication cookies
+cookies.txt
 admin-cookies.txt
