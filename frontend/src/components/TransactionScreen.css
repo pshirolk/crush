@@ -69,7 +69,7 @@
   gap: 12px;
 }
 
-.product-button:hover {
+.product-button:hover:not(:disabled) {
   background: var(--color-accent);
   color: var(--color-background);
 }
@@ -78,7 +78,7 @@
   color: var(--color-accent);
 }
 
-.product-button:hover strong {
+.product-button:hover:not(:disabled) strong {
   color: var(--color-background);
 }
 
@@ -314,6 +314,10 @@
   color: #88837c;
   cursor: not-allowed;
   opacity: 0.7;
+}
+
+.product-button.inventory-soldout strong {
+  color: inherit;
 }
 
 .product-button.inventory-soldout > span:first-child {
