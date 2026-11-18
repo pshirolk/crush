@@ -80,14 +80,15 @@ function InventoryScreen({
   // Reusable inventory row
   const inventoryRow = (item) => {
     const status = inventory[item.stockKey] || 'available'
+    const displayName = item.inventoryName || item.name
 
     return (
       <div
         className={`inventory-item inventory-${status}`}
         key={item.stockKey}
       >
-        <span>{item.name}</span>
-        {statusSelect(item.stockKey, item.name)}
+        <span>{displayName}</span>
+        {statusSelect(item.stockKey, displayName)}
       </div>
     )
   }
@@ -98,7 +99,7 @@ function InventoryScreen({
       className="inventory-alert"
       key={item.stockKey}
     >
-      <span>{item.name}</span>
+      <span>{item.inventoryName || item.name}</span>
 
       <button
         onClick={() =>

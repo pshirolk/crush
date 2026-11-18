@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
 import './TransactionScreen.css'
-import { categories } from '../data/products'
+import { categories, products } from '../data/products'
 import {
     productStockKey,
     modifierStockKey,
@@ -42,6 +42,12 @@ const syrupOptions = [
     { id: 'lavender', name: 'Lavender Syrup', price: 0.50 },
     { id: 'honey', name: 'Honey', price: 0.50 },
 ]
+
+const addOnProductDependencies = {
+    'extra-shot': 1,
+    'extra-chai': 5,
+    'extra-matcha': 6,
+}
 
 const modifierConfig = {
     espresso: {
@@ -186,11 +192,58 @@ function TransactionScreen({ onBack, inventory = {} }) {
     const iceStatus = inventory[modifierStockKey('ice')] || 'available'
     const iceSoldOut = iceStatus === 'soldout'
 
-    const getModifierStatus = (id) =>
-        inventory?.[modifierStockKey(id)] || 'available'
+    const getProductStatus = (id) => {
+        const product = products.find((item) => item.id === id)
 
-    const getProductStatus = (id) =>
-        inventory?.[productStockKey(id)] || 'available'
+        const status =
+            inventory?.[productStockKey(id)] || 'available'
+
+        const dependencyStatuses = (product?.requires || []).map(
+            (requiredId) =>
+                inventory?.[productStockKey(requiredId)] || 'available'
+        )
+
+        const statuses = [status, ...dependencyStatuses]
+
+        if (statuses.includes('soldout')) {
+            return 'soldout'
+        }
+
+        if (statuses.includes('low')) {
+            return 'low'
+        }
+
+        return 'available'
+    }
+
+    const getModifierStatus = (id) => {
+        const modifierStatus =
+            inventory?.[modifierStockKey(id)] || 'available'
+
+        const productId = addOnProductDependencies[id]
+
+        if (productId === undefined) {
+            return modifierStatus
+        }
+
+        const productStatus = getProductStatus(productId)
+
+        if (
+            productStatus === 'soldout' ||
+            modifierStatus === 'soldout'
+        ) {
+            return 'soldout'
+        }
+
+        if (
+            productStatus === 'low' ||
+            modifierStatus === 'low'
+        ) {
+            return 'low'
+        }
+
+        return 'available'
+    }
 
     const isAvailable = (option) =>
         getModifierStatus(option.id) !== 'soldout'

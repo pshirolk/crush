@@ -1,11 +1,11 @@
 export const categories = {
   "Coffee & Tea": [
     { id: 1, name: "Espresso", price: 3.0, modifierType: "espresso" },
-    { id: 2, name: "Americano", price: 3.5, modifierType: "americano" },
-    { id: 3, name: "Latte", price: 4.75, modifierType: "milkCoffee" },
-    { id: 4, name: "Cappuccino", price: 4.5, modifierType: "milkCoffee" },
-    { id: 5, name: "Chai Latte", price: 4.75, modifierType: "chai" },
-    { id: 6, name: "Matcha Latte", price: 5.25, modifierType: "matcha" },
+    { id: 2, name: "Americano", price: 3.5, modifierType: "americano", requires: [1] },
+    { id: 3, name: "Latte", price: 4.75, modifierType: "milkCoffee", requires: [1] },
+    { id: 4, name: "Cappuccino", price: 4.5, modifierType: "milkCoffee", requires: [1] },
+    { id: 5, name: "Chai Latte", inventoryName: "Chai", price: 4.75, modifierType: "chai" },
+    { id: 6, name: "Matcha Latte", inventoryName: "Matcha", price: 5.25, modifierType: "matcha" },
   ],
   "Baked Goods": [
     { id: 7, name: "Croissant", price: 3.75 },
